@@ -42,13 +42,13 @@ RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Copy existing application directory contents
-COPY . /var/www
+COPY ./laravel-app /var/www
 
 RUN mkdir -p /var/www/vendor
 
-COPY ./artisan /var/www/artisan
+# COPY ./laravel-app/artisan /var/www
 
-RUN chmod +x /var/www/artisan
+# RUN chmod +x /var/www/artisan
 
 RUN composer install
 
