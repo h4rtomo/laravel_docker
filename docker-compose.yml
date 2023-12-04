@@ -27,7 +27,7 @@ services:
       - ./laravel-app:/var/www/html
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     ports:
-      - "8080:80"
+      - "80:80"
       - "443:443"
     networks:
       - laravel
