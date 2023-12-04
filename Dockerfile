@@ -1,7 +1,8 @@
 FROM php:8.2-fpm
 
 # Copy composer.lock and composer.json
-COPY composer.lock composer.json /var/www/
+COPY ./laravel-app/composer.lock /var/www/composer.lock
+COPY ./laravel-app/composer.json /var/www/composer.json
 
 # Set working directory
 WORKDIR /var/www
