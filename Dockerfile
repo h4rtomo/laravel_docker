@@ -18,6 +18,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy application files
 COPY ./laravel-app /var/www/html
 
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
 # Install application dependencies
 RUN composer install --optimize-autoloader --no-interaction
 

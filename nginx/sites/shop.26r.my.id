@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name 26r.my.id www.26r.my.id;
+    server_name shop.26r.my.id www.shop.26r.my.id;
     root /var/www/html/public;
 
     index index.php index.html index.htm;
