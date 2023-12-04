@@ -46,7 +46,7 @@ COPY . /var/www
 
 RUN mkdir -p /var/www/vendor
 
-COPY ./artisan /var/www
+COPY ./artisan /var/www/artisan
 
 RUN chmod +x /var/www/artisan
 
