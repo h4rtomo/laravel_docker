@@ -46,7 +46,10 @@ COPY . /var/www
 
 RUN mkdir -p /var/www/vendor
 
+COPY artisan /var/www
+
 RUN chmod +x /var/www/artisan
+
 RUN composer install
 
 # Copy existing application directory permissions
