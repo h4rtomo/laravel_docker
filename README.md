@@ -73,7 +73,7 @@ groups
 Jalankan perintah berikut ini untuk:
 
 ```
-sudo adduser deployer
+sudo adduser gitrunner
 ```
 
 ```
@@ -81,7 +81,7 @@ sudo apt install acl
 ```
 
 ```
-sudo setfacl -R -m u:deployer:rwx /home/aplikasi
+sudo setfacl -R -m u:gitrunner:rwx /home/aplikasi
 ```
 
 ```
@@ -89,10 +89,10 @@ chmod 775 -R /home/aplikasi/storage
 chmod 775 -R /home/aplikasi/public
 ```
 
-login ke aplikasi sebagai deployer:
+login ke aplikasi sebagai gitrunner:
 
 ```
-sudo deployer
+sudo gitrunner
 ```
 
 Jalankan perintah untuk membuat pasangan private key dan public key
@@ -107,37 +107,34 @@ copy isi dari public key ke authorized key:
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
-## 4. Install PHP MySQL Apache dengan Docker & Install Lets Encrypt
+## 4. Running Docker on Server & Install Lets Encrypt
 
 ```
 # masuk folder, buka terminal di /home/aplikasi folder
-git clone https://github.com/dirumahrafif/docker-apache-php8-mysql.git .
 docker-compose up -d
 ```
 
 Proses install letsencrypt
 
 ```
-# masuk ke container webserver
 docker exec -it webserver bash
-certbot --apache -d resumerafif.com -m dirumahrafif@gmail.com
-certbot --apache -d resumerafif.com -d www.resumerafif.com -m dirumahrafif@gmail.com
 ```
 
-## 5. Buka project yang ada di GITLAB
+```
+certbot --nginx -d shop.26r.my.id -m rudihartomo100@gmail.com
+```
 
-### Menambahkan Variabel
+#certbot --nginx -d shop.26r.my.id -d www.shop.26r.my.id -m rudihartomo100@gmail.com
 
-Buka bagian settings > CI/CD > Variables kemudian tambahkan variabel, misalnya diberi nama SSH_PRIVATE_KEY, dan isi didapatkan dari
+## 5. Setting ENV Variabel
+
+Settings > CI/CD > Variables
+
+kemudian tambahkan variabel, misalnya diberi nama SSH_PRIVATE_KEY, dan isi didapatkan dari
 
 ```
-# pastikan sudah login sebagai user yang diberi akses ke folder aplikasi
 cat ~/.ssh/id_rsa
 ```
-
-File htaccess bisa diambil dari [contoh file htaccess](https://gist.githubusercontent.com/dirumahrafif/71e5d2ebeada6a5be126cca638651461/raw/2fb47747a17d3a0c73de7001948e587340bf89b3/.htaccess)
-
-![Tambahkan variabel](https://raw.githubusercontent.com/dirumahrafif/devlogs/main/DEVOPS/images/1.png)
 
 ## 6. Buat Runner
 
@@ -152,20 +149,18 @@ docker exec -it gitlab-runner gitlab-runner register
 ```
 
 ```
-sudo usermod -aG docker deployer
+sudo usermod -aG docker gitrunner
 ```
 
 ## 7. Buka project Laravel
 
 ### Tambahkan file .gitlab-ci.yml
 
-File .gitlab-ci.yml, ambil contoh di [file berikut ini](https://gist.githubusercontent.com/dirumahrafif/71e5d2ebeada6a5be126cca638651461/raw/2fb47747a17d3a0c73de7001948e587340bf89b3/.gitlab-ci.yml)
-
 ```
-VAR_DIREKTORI: "/home/rafifresume/APLIKASI/www"
-VAR_GIT_URL_TANPA_HTTP: "gitlab.com/dirumahrafif/deployer.git"
+VAR_DIREKTORI: "/var/www"
+VAR_GIT_URL_TANPA_HTTP: "gitlab.com/rudihartomo/gitrunner.git"
 VAR_CLONE_KEY: "xxx" # diambil dari halaman profile (lihat di bawah)
-VAR_USER: "deployer" #user yang sudah diberi akses
+VAR_USER: "gitrunner" #user yang sudah diberi akses
 VAR_IP: "xxx" #ip server
 VAR_FILE_ENV: $FILE_ENV #dari point 5 di atas
 VAR_FILE_HTACCESS: $FILE_HTACCESS #dari point 5 di atas
@@ -174,12 +169,9 @@ VAR_FILE_HTACCESS: $FILE_HTACCESS #dari point 5 di atas
 ### Cara mendapatkan Token User
 
 Buka halaman profile
-![gambar2](https://raw.githubusercontent.com/dirumahrafif/devlogs/main/DEVOPS/images/2.png)
 Masuk ke menu access token:
 
 - masukkan <code>token name</code>
 - <code>expiration date</code> dikosongkan saja
 - <code>select scopes</code> saya checklist semua
 - Kemudian klik tombol **Create personal access token**
-
-![gambar3](https://raw.githubusercontent.com/dirumahrafif/devlogs/main/DEVOPS/images/3.png)
