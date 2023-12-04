@@ -8,7 +8,7 @@ COPY ./laravel-app/composer.json /var/www/composer.json
 WORKDIR /var/www
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
+RUN add-apt-repository ppa:ondrej/php && apt-get update && apt-get install -y \
     build-essential \
     php8.2-fpm \
     php8.2-xml \
