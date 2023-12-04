@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: laravel-app
-    container_name: laravel-app
+    container_name: app
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
@@ -25,9 +25,7 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./laravel-app:/var/www/html
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/sites:/etc/nginx/sites-available
-      - ./nginx/sites:/etc/nginx/sites-enabled
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
     ports:
       - "8080:80"
       - "443:443"
