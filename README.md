@@ -1,5 +1,7 @@
 # CI/CD Docker Laravel dengan Gitlab use VPS Ubuntu 22.04
 
+In this tutorial main folder will be on <code>/home/app/shop</code>, change based on your preference
+
 ## 1. Enable SSH Public Key
 
 SSH on VPS provider
@@ -21,8 +23,6 @@ sudo service sshd reload
 ```
 
 ## 2. Install Docker
-
-Lakukan beberapa perintah berikut ini:
 
 ```
 sudo apt update
@@ -70,7 +70,7 @@ groups
 
 ## 3. Create SSH key Di Server untuk Deploy
 
-Jalankan perintah berikut ini untuk:
+Add <code>gitrunner</code> user
 
 ```
 sudo adduser gitrunner
@@ -80,98 +80,99 @@ sudo adduser gitrunner
 sudo apt install acl
 ```
 
-```
-sudo setfacl -R -m u:gitrunner:rwx /home/aplikasi
-```
-
-```
-chmod 775 -R /home/aplikasi/storage
-chmod 775 -R /home/aplikasi/public
-```
-
-login ke aplikasi sebagai gitrunner:
+login ke aplikasi as <code>gitrunner</code>:
 
 ```
 sudo gitrunner
 ```
 
-Jalankan perintah untuk membuat pasangan private key dan public key
+<code>create private key</code>
 
 ```
 ssh-keygen -t rsa
 ```
 
-copy isi dari public key ke authorized key:
+copy to authorized key:
 
 ```
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
-## 4. Running Docker on Server & Install Lets Encrypt
+## 3. Running Docker on Server & Install Lets Encrypt
+
+Login as <code>root</code> masuk folder <code>/home/app/shop</code>
+
+Create file <code>.env</code> (just for fisrt running, next will be replace with ci/cd variable)
 
 ```
-# masuk folder, buka terminal di /home/aplikasi folder
+nano .env
+```
+
+```
 docker-compose up -d
 ```
 
-Proses install letsencrypt
-
 ```
-docker exec -it webserver bash
+sudo docker exec -it app bash
 ```
 
 ```
-certbot --nginx -d shop.26r.my.id -m rudihartomo100@gmail.com
+certbot certonly --webroot --webroot-path /var/www/html/public  -d shop.26r.my.id
 ```
 
-#certbot --nginx -d shop.26r.my.id -d www.shop.26r.my.id -m rudihartomo100@gmail.com
-
-## 5. Setting ENV Variabel
-
-Settings > CI/CD > Variables
-
-kemudian tambahkan variabel, misalnya diberi nama SSH_PRIVATE_KEY, dan isi didapatkan dari
-
 ```
-cat ~/.ssh/id_rsa
+cd /etc/letsencrypt/live/shop.26r.my.id/
 ```
 
-## 6. Buat Runner
-
 ```
-docker run -d --name gitlab-runner --restart always -v /srv/gitlab-runner/config:/etc/gitlab-runner -v /var/run/docker.sock:/var/run/docker.sock gitlab/gitlab-runner:latest
+sudo docker cp app:/etc/letsencrypt/live/shop.26r.my.id/ /nginx/ssl/
 ```
 
-Daftarkan runner
-
 ```
-docker exec -it gitlab-runner gitlab-runner register
+sudo setfacl -R -m u:gitrunner:rwx /home/app/shop/
 ```
 
 ```
 sudo usermod -aG docker gitrunner
 ```
 
-## 7. Buka project Laravel
-
-### Tambahkan file .gitlab-ci.yml
+## 5. Buat Runner
 
 ```
-VAR_DIREKTORI: "/var/www"
-VAR_GIT_URL_TANPA_HTTP: "gitlab.com/rudihartomo/gitrunner.git"
-VAR_CLONE_KEY: "xxx" # diambil dari halaman profile (lihat di bawah)
-VAR_USER: "gitrunner" #user yang sudah diberi akses
-VAR_IP: "xxx" #ip server
-VAR_FILE_ENV: $FILE_ENV #dari point 5 di atas
-VAR_FILE_HTACCESS: $FILE_HTACCESS #dari point 5 di atas
+docker run -d --name gitlab-runner --restart always -v /var/run/docker.sock:/var/run/docker.sock -v gitlab-runner-config:/etc/gitlab-runner gitlab/gitlab-runner:latest
 ```
 
-### Cara mendapatkan Token User
+### Register runner
 
-Buka halaman profile
-Masuk ke menu access token:
+```
+docker exec -it gitlab-runner gitlab-runner register
+```
 
-- masukkan <code>token name</code>
-- <code>expiration date</code> dikosongkan saja
-- <code>select scopes</code> saya checklist semua
-- Kemudian klik tombol **Create personal access token**
+## 6. Setting ENV Variabel
+
+<code>Settings</code> > <code>CI/CD</code> > <code>Variables</code> > <code>Expand</code> > <code>Add Variables</code>
+
+```
+APP_DIR
+FILE_ENV
+GITLAB_PAT
+GIT_URL => without https or git, ex: gitlab.com/rudihartomo/laravel_docker.git
+HOST_SSH
+SSH_PRIVATE_KEY
+USER_SSH
+```
+
+Login to server as <code>gitrunner</code> to set value <code>SSH_PRIVATE_KEY</code>
+
+```
+cat ~/.ssh/id_rsa
+```
+
+### Cara mendapatkan Token User to set value GITLAB_PAT
+
+Profile > Access Token > Add new token
+
+- <code>token name</code> required
+- <code>expiration date</code> can be null
+- <code>select scopes</code> check all based on nedeed
+- **Create personal access token**
