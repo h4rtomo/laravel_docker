@@ -51,15 +51,6 @@ services:
     networks:
       - laravel
 
-  certbot:
-    image: certbot/certbot
-    container_name: laravel-certbot
-    restart: unless-stopped
-    command: certonly --webroot --webroot-path=/var/www/html/public --domains shop.26r.my.id
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/html
-
 networks:
   laravel:
     driver: bridge
