@@ -1,0 +1,35 @@
+stages:
+  - deploy
+
+Deploy:
+  stage: deploy
+  variables:
+    VAR_APP_DIR: $APP_DIR
+    VAR_GIT_URL: $GIT_URL
+    VAR_GITLAB_PAT: $GITLAB_PAT
+    VAR_USER_SSH: $USER_SSH
+    VAR_HOST_SSH: $HOST_SSH
+    VAR_FILE_ENV: $FILE_ENV
+
+  before_script:
+    - "which ssh-agent || ( apt-get install openssh-client )"
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $VAR_HOST_SSH >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+  script:
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "git config --global safe.directory '*'"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "if [ ! -d $VAR_APP_DIR/.git ]; then echo 'Project belum ditemukan di direktori $VAR_APP_DIR' && mkdir $VAR_APP_DIR && cd $VAR_APP_DIR && git clone https://oauth2:$VAR_GITLAB_PAT@$VAR_GIT_URL .; fi"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "cd $VAR_APP_DIR && git pull origin main && exit"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "if [ -d $VAR_APP_DIR/.env ]; then rm .env; fi"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "cd $VAR_APP_DIR && echo '$VAR_FILE_ENV' >> .env"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker exec app composer install"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker exec app composer update"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker exec app php artisan migrate"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker exec app php artisan db:seed"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker exec app php artisan key:generate"
+    - echo "A!"
