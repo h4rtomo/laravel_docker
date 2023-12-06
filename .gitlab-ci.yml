@@ -28,7 +28,7 @@ Deploy:
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "cd $VAR_APP_DIR && git pull origin main && exit"
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "if [ -d $VAR_APP_DIR/.env ]; then rm .env; fi"
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "cd $VAR_APP_DIR && echo '$VAR_FILE_ENV' >> .env"
-    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker cp .env app:/var/www/html/.env"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker cp $VAR_APP_DIR/.env app:/var/www/html/.env"
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker exec app composer install"
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker exec app php artisan migrate"
     - echo "======= DONE ======="
