@@ -1,6 +1,6 @@
 # CI/CD Docker Laravel dengan Gitlab use VPS Ubuntu 22.04
 
-In this tutorial main folder will be on <code>/home/app/shop</code>, change based on your preference
+In this tutorial main folder will be on <code>/home/app/shop</code>, change based on your preference and domain [shop.26r.my.id](shop.26r.my.id)
 
 ## 1. Enable SSH Public Key
 
@@ -149,7 +149,7 @@ mkdir -p /etc/letsencrypt/
 docker-compose up -d
 ```
 
-check domain is it running?
+check domain is it running? [shop.26r.my.id](http://shop.26r.my.id)
 usually folder vendor not created <code>docker exec -it app bash </code> and run <code>composer install<code>
 
 ### install ssl certificate
@@ -167,6 +167,8 @@ docker cp nginx/conf_ssl/app.conf nginx:/etc/nginx/conf.d/app.conf
 ```
 docker exec nginx /etc/init.d/nginx reload
 ```
+
+check ssl is it running? [shop.26r.my.id](https://shop.26r.my.id)
 
 ```
 sudo usermod -aG docker gitrunner
