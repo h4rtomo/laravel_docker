@@ -26,6 +26,7 @@ services:
     volumes:
       - ./laravel-app:/var/www/html
       - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - /etc/letsencrypt/:/etc/letsencrypt/
     ports:
       - "80:80"
       - "443:443"
