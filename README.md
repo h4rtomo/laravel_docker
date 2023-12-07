@@ -105,6 +105,10 @@ copy to authorized key:
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
+```
+cat ~/.ssh/id_rsa.pub
+```
+
 Add this ssh_key to <code>Profile</code> > <code>Preferences</code> > <code>SSH Keys</code> > <code>Add new key</code>
 
 ## 3. Running Docker on Server & Install Lets Encrypt
@@ -130,7 +134,11 @@ su - gitrunner
 ```
 
 ```
-git clone git@gitlab.com:{username}/{project_name}.git .
+cd /home/app/shop/
+```
+
+```
+git clone git@gitlab.com:rudihartomo/laravel_docker.git .
 ```
 
 Create file <code>.env</code> (just for fisrt running, next will be replace with ci/cd variable)
@@ -146,11 +154,27 @@ mkdir -p /etc/letsencrypt/
 ```
 
 ```
-docker-compose up -d
+sudo docker compose up -d
+```
+
+```
+sudo setfacl -R -m u:gitrunner:rwx /home/app/shop/
 ```
 
 check domain is it running? [shop.26r.my.id](http://shop.26r.my.id)
 usually folder vendor not created <code>docker exec -it app bash </code> and run <code>composer install<code>
+
+```
+docker exec -it app bash
+```
+
+```
+composer install
+```
+
+```
+sudo chown -R www-data:www-data /var/www/html
+```
 
 ### install ssl certificate
 
@@ -161,7 +185,15 @@ certbot certonly --webroot --webroot-path /home/app/shop/laravel-app/public -d s
 check folder <code>/etc/letsencrypt/</code>
 
 ```
+cd /home/app/shop
+```
+
+```
 docker cp nginx/conf_ssl/app.conf nginx:/etc/nginx/conf.d/app.conf
+```
+
+```
+docker exec nginx nginx -t
 ```
 
 ```
@@ -205,6 +237,10 @@ USER_SSH
 ```
 
 Login to server as <code>gitrunner</code> to set value <code>SSH_PRIVATE_KEY</code>
+
+```
+su - gitrunner
+```
 
 ```
 cat ~/.ssh/id_rsa
