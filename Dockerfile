@@ -10,7 +10,6 @@ RUN apt-get update && \
     libzip-dev \
     unzip \
     git \
-    cerbot \
     && docker-php-ext-install pdo_mysql zip
 
 # Install Composer globally
