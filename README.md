@@ -227,16 +227,18 @@ docker exec -it gitlab-runner gitlab-runner register
 <code>Settings</code> > <code>CI/CD</code> > <code>Variables</code> > <code>Expand</code> > <code>Add Variables</code>
 
 ```
-APP_DIR
-FILE_ENV
+APP_DIR => in this tutorial use /home/app/shop
+FILE_ENV => file .env
 GITLAB_PAT
 GIT_URL => without https or git, ex: gitlab.com/rudihartomo/laravel_docker.git
 HOST_SSH
 SSH_PRIVATE_KEY
-USER_SSH
+USER_SSH => in this tutorial use  gitrunner
 ```
 
-Login to server as <code>gitrunner</code> to set value <code>SSH_PRIVATE_KEY</code>
+### generate value SSH_PRIVATE_KEY
+
+Login to server as <code>gitrunner</code>
 
 ```
 su - gitrunner
@@ -246,7 +248,7 @@ su - gitrunner
 cat ~/.ssh/id_rsa
 ```
 
-### Cara mendapatkan Token User to set value GITLAB_PAT
+### generate value GITLAB_PAT
 
 Profile > Access Token > Add new token
 
