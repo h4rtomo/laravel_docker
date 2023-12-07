@@ -123,18 +123,20 @@ cd /home/app/shop
 sudo setfacl -R -m u:gitrunner:rwx /home/app/shop/
 ```
 
+Login as <code>gitrunner</code>
+
 ```
-git clone git@gitlab.com:{username}/{project_name}.git .
+su - gitrunner
 ```
 
 ```
-cd shop
+git clone git@gitlab.com:{username}/{project_name}.git .
 ```
 
 Create file <code>.env</code> (just for fisrt running, next will be replace with ci/cd variable)
 
 ```
-nano .env
+nano laravel-app/.env
 ```
 
 ```
