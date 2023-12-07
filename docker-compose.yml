@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: laravel-app
+    image: app
     container_name: app
     restart: unless-stopped
     working_dir: /var/www/html
@@ -39,6 +39,8 @@ services:
     image: mysql:latest
     container_name: mysql
     restart: unless-stopped
+    # env_file:
+    #   - mysql.env
     environment:
       MYSQL_DATABASE: laravel
       MYSQL_USER: laravel_user

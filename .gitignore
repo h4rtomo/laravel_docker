@@ -1,3 +1,4 @@
 .env
+mysql.env
 
 nginx/ssl/*

@@ -29,15 +29,26 @@ sudo apt update
 ```
 
 ```
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
+sudo apt install apt-transport-https ca-certificates curl software-properties-common gnupg acl certbot
 ```
 
 ```
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo install -m 0755 -d /etc/apt/keyrings
 ```
 
 ```
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
+
+```
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+```
+
+```
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
 
 ```
@@ -45,11 +56,7 @@ sudo apt update
 ```
 
 ```
-apt-cache policy docker-ce
-```
-
-```
-sudo apt install docker-ce
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
 ```
@@ -77,13 +84,13 @@ sudo adduser gitrunner
 ```
 
 ```
-sudo apt install acl
+sudo usermod -aG docker gitrunner
 ```
 
-login ke aplikasi as <code>gitrunner</code>:
+login as <code>gitrunner</code>:
 
 ```
-sudo gitrunner
+su - gitrunner
 ```
 
 <code>create private key</code>
@@ -98,9 +105,27 @@ copy to authorized key:
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 
+Add this ssh_key to <code>Profile</code> > <code>Preferences</code> > <code>SSH Keys</code> > <code>Add new key</code>
+
 ## 3. Running Docker on Server & Install Lets Encrypt
 
-Login as <code>root</code> masuk folder <code>/home/app/shop</code>
+Login as <code>root</code>
+
+```
+mkdir -p /home/app/shop
+```
+
+```
+cd /home/app/shop
+```
+
+```
+git clone git@gitlab.com:{username}/{project_name}.git .
+```
+
+```
+cd shop
+```
 
 Create file <code>.env</code> (just for fisrt running, next will be replace with ci/cd variable)
 
@@ -109,11 +134,11 @@ nano .env
 ```
 
 ```
-docker-compose up -d
+mkdir -p /etc/letsencrypt/
 ```
 
 ```
-sudo docker exec -it app bash
+docker-compose up -d
 ```
 
 ```
