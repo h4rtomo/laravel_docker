@@ -29,7 +29,7 @@ Deploy:
     - echo "======= START ======="
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "git config --global safe.directory '*'"
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "if [ ! -d $VAR_APP_DIR/.git ]; then echo 'Folder not found/access $USER_SSH not permitted di direktori $VAR_APP_DIR' && mkdir $VAR_APP_DIR && cd $VAR_APP_DIR && git clone https://oauth2:$VAR_GITLAB_PAT@$VAR_GIT_URL .; fi"
-    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "cd $VAR_APP_DIR && git checkout production && git pull origin production && exit"
+    - ssh $VAR_USER_SSH@$VAR_HOST_SSH "cd $VAR_APP_DIR && git pull && git checkout production && git pull origin production && exit"
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "if [ -d $VAR_APP_DIR/.env ]; then rm .env; fi"
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "cd $VAR_APP_DIR && echo '$VAR_FILE_ENV' >> .env"
     - ssh $VAR_USER_SSH@$VAR_HOST_SSH "docker cp $VAR_APP_DIR/.env app:/var/www/html/.env"
