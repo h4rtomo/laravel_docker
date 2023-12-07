@@ -139,6 +139,8 @@ Create file <code>.env</code> (just for fisrt running, next will be replace with
 nano laravel-app/.env
 ```
 
+Login as <code>root</code>
+
 ```
 mkdir -p /etc/letsencrypt/
 ```
