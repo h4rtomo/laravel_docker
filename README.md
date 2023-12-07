@@ -120,6 +120,10 @@ cd /home/app/shop
 ```
 
 ```
+sudo setfacl -R -m u:gitrunner:rwx /home/app/shop/
+```
+
+```
 git clone git@gitlab.com:{username}/{project_name}.git .
 ```
 
@@ -158,10 +162,6 @@ docker cp nginx/conf_ssl/app.conf nginx:/etc/nginx/conf.d/app.conf
 
 ```
 docker exec nginx /etc/init.d/nginx reload
-```
-
-```
-sudo setfacl -R -m u:gitrunner:rwx /home/app/shop/
 ```
 
 ```
