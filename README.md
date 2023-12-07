@@ -136,7 +136,7 @@ git clone git@gitlab.com:{username}/{project_name}.git .
 Create file <code>.env</code> (just for fisrt running, next will be replace with ci/cd variable)
 
 ```
-nano laravel-app/.env
+cp laravel-app/.env.example laravel-app/.env && nano laravel-app/.env
 ```
 
 Login as <code>root</code>
