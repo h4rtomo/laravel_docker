@@ -174,6 +174,10 @@ sudo usermod -aG docker gitrunner
 
 ## 5. Buat Runner
 
+### create new runner project
+
+Go to <code>Settings > <code>CI /CD</code> > <code>Runners</code> > <code>Expand</code> > <code>New Project Runner</code>
+
 ```
 docker run -d --name gitlab-runner --restart always -v /var/run/docker.sock:/var/run/docker.sock -v gitlab-runner-config:/etc/gitlab-runner gitlab/gitlab-runner:latest
 ```
