@@ -141,16 +141,23 @@ mkdir -p /etc/letsencrypt/
 docker-compose up -d
 ```
 
+check domain is it running?
+usually folder vendor not created <code>docker exec -it app bash </code> and run <code>composer install<code>
+
+### install ssl certificate
+
 ```
-certbot certonly --webroot --webroot-path /var/www/html/public  -d shop.26r.my.id
+certbot certonly --webroot --webroot-path /home/app/shop/laravel-app/public -d shop.26r.my.id
+```
+
+check folder <code>/etc/letsencrypt/</code>
+
+```
+docker cp nginx/conf_ssl/app.conf nginx:/etc/nginx/conf.d/app.conf
 ```
 
 ```
-cd /etc/letsencrypt/live/shop.26r.my.id/
-```
-
-```
-sudo docker cp app:/etc/letsencrypt/live/shop.26r.my.id/ /nginx/ssl/
+docker exec nginx /etc/init.d/nginx reload
 ```
 
 ```
